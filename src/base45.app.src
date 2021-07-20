@@ -1,0 +1,15 @@
+{application, base45, [
+	{description, "Base45-Encoder/-Decoder"},
+	{vsn, "0.1.0"},
+	{registered, []},
+	% {mod, {base45_app, []}},
+	{applications, [
+		kernel,
+		stdlib
+	]},
+	{env, []},
+	{modules, []},
+
+	{licenses, ["Apache 2.0"]},
+	{links, []}
+]}.
