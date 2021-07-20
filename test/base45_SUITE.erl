@@ -47,7 +47,6 @@ decode(_Config) ->
 % ---
 
 encode_test({In, Out}) ->
-	io:fwrite(standard_error, "~p -> ~p / ~p~n", [In, Out, base45:encode(In)]),
 	Out = base45:encode(In).
 
 decode_test({Out, In}) ->
@@ -61,5 +60,6 @@ in_out() ->
 		{<<"AB">>, <<"BB8">>},
 		{<<"Hello!!">>, <<"%69 VD92EX0">>},
 		{<<"base-45">>, <<"UJCLQE7W581">>},
-		{<<"ietf!">>, <<"QED8WEX0">>}
+		{<<"ietf!">>, <<"QED8WEX0">>},
+		{<<"Neben der Evidenz der formalen Gestaltung.">>, <<":+9YJCM-D6VCBJE7Z8PED1$CYJF6VCBJEX.C/KEAEC1$CS346$C3WE:VD2%E:1D">>}
 	].

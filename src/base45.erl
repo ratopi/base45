@@ -48,20 +48,50 @@ decode(<<C, D, E, Rest/binary>>) ->
 %%% Internal functions
 %%%===================================================================
 
-alphabet() ->
-	"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:".
+special_chars() ->
+	" $%*+-./:".
 
-encode_part(N) when N >= 0, N =< 45 ->
-	lists:nth(N + 1, alphabet()).
+decode_alphabet() ->
+	[
+		{36, $ },
+		{37, $$},
+		{38, $%},
+		{39, $*},
+		{40, $+},
+		{41, $-},
+		{42, $.},
+		{43, $/},
+		{44, $:}
+	].
+
+
+encode_part(N) when N >= 0, N =< 9 ->
+	N + $0;
+
+encode_part(N) when N >= 10, N =< 35 ->
+	N - 10 + $A;
+
+encode_part(N) when N >= 36, N =< 45 ->
+	lists:nth(N - 35, special_chars()).
+
+
+decode_part(Char) when Char >= $0, Char =< $9 ->
+	Char - $0;
+
+decode_part(Char) when Char >= $A, Char =< $Z ->
+	Char - $A + 10;
 
 decode_part(Char) ->
-	decode_part(Char, alphabet()).
-
-decode_part(Char, []) ->
-	erlang:error({illegal_char, Char});
-
-decode_part(Char, [Char | X]) ->
-	44 - length(X);
-
-decode_part(Char, [_ | X]) ->
-	decode_part(Char, X).
+	case
+		lists:filtermap(
+			fun({N, C}) ->
+				case C == Char of
+					true -> {true, N};
+					false -> false
+				end
+			end,
+			decode_alphabet()
+		)
+	of
+		[N] -> N
+	end.
