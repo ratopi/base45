@@ -45,7 +45,12 @@ Decoding:
 gives
 
     <<1,2,3>>
-    
+
+Calling decode with an illegal input string (like <<"GGW">>, which leads to 65536),
+will throw an `illegale_encoding` exception in a tuple, containing the problematic part of the input:
+
+    {illegale_encoding, <<C, D, E>>}
+
 
 ## Feedback and bugs
 

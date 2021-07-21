@@ -36,13 +36,18 @@ decode(<<>>) ->
 	<<>>;
 
 decode(<<C, D>>) ->
-	N = decode_part(C) + decode_part(D) * 45,
+	N = decode_part(C) + 45 * decode_part(D),
 	<<N>>;
 
 decode(<<C, D, E, Rest/binary>>) ->
-	N = decode_part(C) + decode_part(D) * 45 + decode_part(E) * 45 * 45,
-	X = decode(Rest),
-	<<N:16, X/binary>>.
+	N = decode_part(C) + 45 * (decode_part(D) + 45 * decode_part(E)),
+	case N > 65535 of
+		true ->
+			erlang:error({illegale_encoding, <<C, D, E>>});
+		false ->
+			X = decode(Rest),
+			<<N:16, X/binary>>
+	end.
 
 %%%===================================================================
 %%% Internal functions
