@@ -1,6 +1,6 @@
 {application, base45, [
 	{description, "Base45-Encoder/-Decoder"},
-	{vsn, "0.0.0"},
+	{vsn, "1.0.0"},
 	{registered, []},
 	% {mod, {base45_app, []}},
 	{applications, [
