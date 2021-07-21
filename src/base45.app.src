@@ -1,15 +1,29 @@
 {application, base45, [
+
 	{description, "Base45-Encoder/-Decoder"},
 	{vsn, "0.0.0"},
+
 	{registered, []},
-	% {mod, {base45_app, []}},
+
 	{applications, [
 		kernel,
 		stdlib
 	]},
+
 	{env, []},
-	{modules, []},
+	{modules, [
+		base45
+	]},
+
+	{maintainers, [
+		"Ralf Th. Pietsch <ratopi@abwesend.de>"
+	]},
 
 	{licenses, ["Apache 2.0"]},
-	{links, []}
+
+	{links, [
+		{"GitHub", "https://github.com/ratopi/base45"},
+		{"Issues", "https://github.com/ratopi/base45/issues"},
+		{"Contributors", "https://github.com/ratopi/base45/graphs/contributors"}
+	]}
 ]}.
