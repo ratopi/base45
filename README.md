@@ -49,12 +49,24 @@ gives
     <<1,2,3>>
 
 Calling decode with an illegal input string (like <<"GGW">>, which leads to 65536),
-will throw an `illegale_encoding` exception in a tuple, containing the problematic part of the input:
+will throw an `illegal_encoding` exception in a tuple, containing the problematic part of the input:
 
-    {illegale_encoding, <<"GGW">>}
+    {illegal_encoding, <<"GGW">>}
+
+Calling decode with an illegal input string with illegal base45 characters (that are characters not in
+the base45 alphabet), will throw an `illegal_character` exception in a tuple, containing the problematic
+part of the input:
+
+	{illegal_character, <<"=">>}
 
 
 ## Feedback and bugs
 
 Feel free to give me any feedback you like via github:
 https://github.com/ratopi/base45/issues
+
+
+## Breaking changes
+
+With version 2.0.0 the typo in error atom "illegale_encoding" was fixed, and is now "illegal_encoding" (w/o "e").
+

@@ -35,6 +35,10 @@ encode(<<N:16, Rest/binary>>) ->
 decode(<<>>) ->
 	<<>>;
 
+decode(<<C>>) ->
+	N = decode_part(C),
+	<<N>>;
+
 decode(<<C, D>>) ->
 	N = decode_part(C) + 45 * decode_part(D),
 	<<N>>;
@@ -43,7 +47,7 @@ decode(<<C, D, E, Rest/binary>>) ->
 	N = decode_part(C) + 45 * (decode_part(D) + 45 * decode_part(E)),
 	case N > 65535 of
 		true ->
-			erlang:error({illegale_encoding, <<C, D, E>>});
+			erlang:error({illegal_encoding, <<C, D, E>>});
 		false ->
 			X = decode(Rest),
 			<<N:16, X/binary>>
@@ -98,5 +102,7 @@ decode_part(Char) ->
 			decode_alphabet()
 		)
 	of
-		[N] -> N
+		[N] -> N;
+		_ -> erlang:error({illegal_character, <<Char>>})
 	end.
+

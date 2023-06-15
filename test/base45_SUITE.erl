@@ -50,7 +50,10 @@ decode(_Config) ->
 	lists:foreach(fun decode_test/1, in_out()).
 
 decode_fail(_Config) ->
-	lists:foreach(fun decode_fail_test/1, illegal_values()).
+	lists:foreach(decode_fail_test(illegal_encoding), illegal_values()).
+
+decode_fail_illegal_charater(_Config) ->
+	lists:foreach(decode_fail_test(illegal_character), illegal_characters()).
 
 %%%===================================================================
 %%% Internal functions
@@ -75,14 +78,16 @@ in_out() ->
 
 % --- for must fail tests ---
 
-decode_fail_test({In, FailingPart}) ->
-	try base45:decode(In) of
-		_ ->
-			io:fwrite(standard_error, "should not succeed~n"),
-			erlang:error(decode_fail)
-	catch
-		error:{illegale_encoding, FailingPart} ->
-			ok
+decode_fail_test(Error) ->
+	fun({In, FailingPart}) ->
+		try base45:decode(In) of
+			_ ->
+				io:fwrite(standard_error, "should not succeed~n"),
+				erlang:error(decode_fail)
+		catch
+			error:{Error, FailingPart} ->
+				ok
+		end
 	end.
 
 
@@ -91,3 +96,11 @@ illegal_values() ->
 		{<<"GGW">>, <<"GGW">>},
 		{<<"000GGW">>, <<"GGW">>}
 	].
+
+illegal_characters() ->
+	[
+		{<<"=">>,  <<"=">>},
+		{<<"AB=">>, <<"=">>},
+		{<<"ABa">>, <<"a">>}
+	].
+
