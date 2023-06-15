@@ -15,11 +15,11 @@ Use it in your project via rebar dependency:
 
 or for a specific release:
 
-	{deps, [{base45, "1.1.0"]}.
+	{deps, [{base45, "2.0.0"]}.
 
 Or if you like to fetch the source code from github:
 
-    {rebar, {git, "https://github.com/ratopi/base45.git", {tag, "1.1.0"}}}.
+    {rebar, {git, "https://github.com/ratopi/base45.git", {tag, "2.0.0"}}}.
                    
 See https://hex.pm/packages/base45 for more info about the hex package.
 
