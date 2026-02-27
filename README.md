@@ -29,6 +29,8 @@ The Base45 alphabet:
 
 ## Import to your project
 
+### Erlang (rebar3)
+
 Use it in your project via rebar dependency:
 
 	{deps, [base45]}.
@@ -40,6 +42,21 @@ or for a specific release:
 Or if you like to fetch the source code from github:
 
     {rebar, {git, "https://github.com/ratopi/base45.git", {tag, "3.0.0"}}}.
+
+### Elixir (Mix)
+
+Add `base45` to your dependencies in `mix.exs`:
+
+    defp deps do
+      [
+        {:base45, "~> 3.0"}
+      ]
+    end
+
+Then call the Erlang module directly:
+
+    :base45.encode("Hello!!")
+    :base45.decode("%69 VD92EX0")
                    
 See https://hex.pm/packages/base45 for more info about the hex package.
 
