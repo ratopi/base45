@@ -19,7 +19,7 @@
 		"Ralf Th. Pietsch <ratopi@abwesend.de>"
 	]},
 
-	{licenses, ["Apache 2.0"]},
+	{licenses, ["Apache-2.0"]},
 
 	{links, [
 		{"GitHub", "https://github.com/ratopi/base45"},
