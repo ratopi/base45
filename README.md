@@ -1,10 +1,30 @@
 # base45
 
-An Base45-encoder/decoder in pure Erlang.
-                    
+A Base45 encoder/decoder in pure Erlang.
+
+Implements the somewhat strange Base45 encoding scheme as defined in
+[RFC 9285](https://datatracker.ietf.org/doc/rfc9285/).
+It was notably used for encoding the EU Digital COVID Certificate in QR codes.
+
 Source code at https://github.com/ratopi/base45.
 
-Implementing encoding as defined in RFC 9285 (https://datatracker.ietf.org/doc/rfc9285/).
+
+## About Base45
+
+Base45 encodes pairs of bytes (16 bit) into 3 characters, and a remaining
+single byte into 2 characters. It uses a 45-character subset of US-ASCII
+that is compatible with the Alphanumeric mode of QR codes.
+
+The number 45 comes from the QR code standard (ISO/IEC 18004). In
+Alphanumeric mode, a QR code supports exactly 45 characters:
+the digits `0-9`, the uppercase letters `A-Z`, and 9 special characters.
+This mode is more compact than Byte mode, encoding two characters in just
+11 bits. Base45 takes advantage of this by mapping binary data exclusively
+to these 45 characters, resulting in smaller QR codes than e.g. Base64
+(which would require the less efficient Byte mode).
+
+The Base45 alphabet:
+`0-9`, `A-Z`, ` ` (space), `$`, `%`, `*`, `+`, `-`, `.`, `/`, `:`
 
 
 ## Import to your project

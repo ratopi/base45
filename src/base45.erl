@@ -1,21 +1,51 @@
 %%%-------------------------------------------------------------------
 %%% @author Ralf Thomas Pietsch <ratopi@abwesend.de>
 %%% @copyright (C) 2021, Ralf Thomas Pietsch
-%%% @doc base45 is module for encoding and decoding binary data into the (somewhat strange) base45 format.
+%%% @doc A Base45 encoder/decoder for binary data.
 %%%
-%%% The base45 format is used in QR codes, e.g. for the EU Digital COVID Certificate.
-%%% Implementing encoding as defined in RFC 9285 (https://datatracker.ietf.org/doc/rfc9285/).
+%%% Implements the Base45 encoding scheme as defined in
+%%% <a href="https://datatracker.ietf.org/doc/rfc9285/">RFC 9285</a>.
 %%%
-%%% The base45 format encodes 16 bit values into 2 or 3 characters, depending on the value.
-%%% The module provides functions to encode and decode binary data in this format.
+%%% == Examples ==
 %%%
-%%% encode/1 encodes a binary value into base45.
+%%% Encoding:
+%%% ```
+%%% > base45:encode(<<"Hello!!">>).
+%%% <<"%69 VD92EX0">>
 %%%
-%%% decode/1 decodes a base45 encoded binary value.
+%%% > base45:encode(<<"AB">>).
+%%% <<"BB8">>
 %%%
-%%% The base45 format uses the following 45 characters:
+%%% > base45:encode(<<100>>).
+%%% <<"A2">>
+%%% '''
 %%%
-%%% 0-9, A-Z, ' ' (space), $ (dollar), % (percent), * (asterisk), + (plus), - (minus), . (dot), / (slash), : (colon).
+%%% Decoding:
+%%% ```
+%%% > base45:decode(<<"%69 VD92EX0">>).
+%%% <<"Hello!!">>
+%%%
+%%% > base45:decode(<<"BB8">>).
+%%% <<"AB">>
+%%%
+%%% > base45:decode(<<"A2">>).
+%%% <<100>>
+%%% '''
+%%%
+%%% Invalid input raises an error:
+%%% ```
+%%% > base45:decode(<<"GGW">>).
+%%% ** exception error: {illegal_encoding,<<"GGW">>}
+%%%
+%%% > base45:decode(<<"::">>).
+%%% ** exception error: {illegal_encoding,<<"::">>}
+%%%
+%%% > base45:decode(<<"A">>).
+%%% ** exception error: {illegal_encoding,<<"A">>}
+%%%
+%%% > base45:decode(<<"===">>).
+%%% ** exception error: {illegal_character,<<"=">>}
+%%% '''
 %%%
 %%% @end
 %%% Created : 20. Jul 2021 22:11
@@ -30,7 +60,10 @@
 %%% API
 %%%===================================================================
 
-%%%@doc Encode a binary value into base45.
+%%% @doc Encode a binary value into Base45.
+%%%
+%%% Two input bytes are encoded into 3 characters, a single remaining byte
+%%% into 2 characters. An empty binary returns an empty binary.
 -spec encode(binary()) -> binary().
 encode(<<>>) ->
 	<<>>;
@@ -48,13 +81,17 @@ encode(<<N:16, Rest/binary>>) ->
 	<<C, D, E, X/binary>>.
 
 
-%%% @doc Decode a base45 encoded binary value.
-%%% Will fail with an exception, if the input is not a valid base45 encoded binary value with
+%%% @doc Decode a Base45 encoded binary value.
+%%%
+%%% The input length must be divisible by 3, or have a remainder of 2
+%%% (for a trailing single-byte encoding).
+%%%
+%%% Raises an `error' exception if the input is not valid Base45:
 %%% <ul>
-%%% <li>`{illegal_encoding, <<_>>}' if a single character remains (invalid length), or</li>
-%%% <li>`{illegal_encoding, <<_, _>>}' if a pair of chars result to a value above 255, or</li>
-%%% <li>`{illegal_encoding, <<_, _, _>>}' if a tripple of chars result to a value above 65535, or</li>
-%%% <li>`{illegal_character, <<Char>>}' if the binary contains an illegal character.</li>
+%%% <li>`{illegal_encoding, <<_>>}' if a single character remains (invalid length)</li>
+%%% <li>`{illegal_encoding, <<_, _>>}' if a pair of characters results in a value above 255</li>
+%%% <li>`{illegal_encoding, <<_, _, _>>}' if a triplet of characters results in a value above 65535</li>
+%%% <li>`{illegal_character, <<Char>>}' if the input contains a character outside the Base45 alphabet</li>
 %%% </ul>
 %%% @end
 -spec decode(binary()) -> binary().
