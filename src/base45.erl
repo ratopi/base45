@@ -51,7 +51,9 @@ encode(<<N:16, Rest/binary>>) ->
 %%% @doc Decode a base45 encoded binary value.
 %%% Will fail with an exception, if the input is not a valid base45 encoded binary value with
 %%% <ul>
-%%% <li>`{illegal_encoding, <<_, _, _>>}' if a tripple of chars result to a value above 65335, or</li>
+%%% <li>`{illegal_encoding, <<_>>}' if a single character remains (invalid length), or</li>
+%%% <li>`{illegal_encoding, <<_, _>>}' if a pair of chars result to a value above 255, or</li>
+%%% <li>`{illegal_encoding, <<_, _, _>>}' if a tripple of chars result to a value above 65535, or</li>
 %%% <li>`{illegal_character, <<Char>>}' if the binary contains an illegal character.</li>
 %%% </ul>
 %%% @end
@@ -60,12 +62,16 @@ decode(<<>>) ->
 	<<>>;
 
 decode(<<C>>) ->
-	N = decode_part(C),
-	<<N>>;
+	erlang:error({illegal_encoding, <<C>>});
 
 decode(<<C, D>>) ->
 	N = decode_part(C) + 45 * decode_part(D),
-	<<N>>;
+	case N > 255 of
+		true ->
+			erlang:error({illegal_encoding, <<C, D>>});
+		false ->
+			<<N>>
+	end;
 
 decode(<<C, D, E, Rest/binary>>) ->
 	N = decode_part(C) + 45 * (decode_part(D) + 45 * decode_part(E)),
